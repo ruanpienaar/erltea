@@ -3,7 +3,7 @@
 # $@ - Trace patterns seperated by spaces ( as specified by redbug ).
 DIR=`dirname $0`
 #killem' ( works on mac though... )
-ps ux | grep beam | grep trace_ | awk '{ print $2 }' | xargs kill
+#ps ux | grep beam | grep trace_ | awk '{ print $2 }' | xargs kill
 
 # All of this was created, to facilitate tracing multiple modules from the cmdline.
 for NODE in `cat nodes`; do
