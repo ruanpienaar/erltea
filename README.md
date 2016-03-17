@@ -20,5 +20,5 @@ have a look at the [Redbug Trace Pattern examples](https://github.com/massemanet
 ./erltea.sh Cookie TrcPattern1 TrcPattern2 ... ...
 ./erltea.sh cookie "ets -> return;stack"
 ```
-traces are stored in NODE_traces.trc, NODE_traces.trc.1, NODE_traces.trc2,
-usually where the remote node's erlang.log will be
+Trace results are stored in the erltea directory as : trace_file_NODE.txt.
+**COMMING SOON** seperate script to trace to binary file, plus another script for format binary files.
