@@ -12,5 +12,6 @@ for NODE in `cat nodes`; do
     NODEPREF=`echo $NODE | awk -F'@' '{ print $1 }'`
     erl -pa $DIR/ebin -pa $DIR/deps/*/ebin \
     -sname "trace_node_$NODEPREF"  -setcookie $1 \
-    -noshell -hidden -run erltea trace "$NODE" "$@" &
+    -noshell \
+    -hidden -run erltea trace "$NODE" "$@" > "trace_file_$NODEPREF.txt" &
 done

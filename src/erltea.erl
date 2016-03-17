@@ -2,47 +2,41 @@
 -export([
     trace/0
     ,trace/1
-    %,printer/1
+    ,do_trace/3
 ]).
-
-%% Why are you getting TEA when you asked for COFFEE ?
-%% Stop pulling your hair out, use tracing :)
 
 trace() ->
     usage().
-
-%% here i expect people to pass in the redbug TRC spec.
-
 trace(Args) when length(Args) > 1 ->
+    % application:start(lager),
     [Node, Cookie|Trcs] = Args,
-    erlang:set_cookie(list_to_atom(Node), list_to_atom(Cookie)),
-    true = net_kernel:connect(list_to_atom(Node)),
-    % File = trace_file(Node),
-    % {ok, FPID} = file:open(File, [write, binary]),
-    % true = erlang:register(
-    %     erltea_tracer_printer,
-    %     spawn(?MODULE, printer, [FPID])
-    % ),
-    _Pid = do_trace(Trcs, [], list_to_atom(Node));
+    NodeAtom=list_to_atom(Node),
+    erlang:set_cookie(NodeAtom, list_to_atom(Cookie)),
+    true = net_kernel:connect(NodeAtom),
+    _Pid = proc_lib:spawn_link(
+        ?MODULE,
+        do_trace,
+        [Trcs, [], NodeAtom]
+    ),
+    receive
+        Any ->
+            io:format("Received:~p\n", [Any]),
+            io:format("stopping trace node ~p\n", [node()]),
+            erlang:halt()
+    end;
 trace(_Args) ->
     usage().
 
 do_trace(Trc, Opts1, Node) ->
-    File = trace_file(atom_to_list(Node)),
-    io:format("File : ~p\n", [File]),
     Opts = [{target, Node},
-            %% I had some crashes with print_file:
-%             =ERROR REPORT==== 17-Mar-2016::11:55:20 ===
-% Error in process <0.41.0> on node 'trace_node_test2@rpmbp' with exit value: {terminated,[{io,format,[<0.39.0>,"~s~n",["\n% 11:55:20 <5039.38.0>({erlang,apply,2})\n% ets:i()"]],[]},{redbug,'-mk_outer/1-fun-3-',6,[{file,"src/redbug.erl"},{line,397}]},{redbug,'-wrap_print_fun/1-fun-0-',3,[{file,"src/redbug.erl"},{line...
-            % {print_file, File},
-            {file, File},
-            % {print_fun,
-            %     fun(T) ->
-            %         erltea_tracer_printer ! T
-            %     end},
-            {time, 50000},
-            {msgs, 10000},
-            {blocking, true}
+             %% I chose not to use {print_file, FN}, it had some problems,
+             %% in the way i started this erltea node. i just use stdout,
+             %% and the binary file
+            % {file, trace_file(Node)}, TODO, add another shell script,
+            % that creates binary files, and finish formatter function...
+            {print_msec, true},
+            {time, 10000},
+            {msgs, 10000}
           ] ++ Opts1,
     case redbug:start(Trc,Opts) of
         redbug_already_started ->
@@ -51,17 +45,21 @@ do_trace(Trc, Opts1, Node) ->
             {oops, {C, R}};
         {Procs, Funcs} ->
             {Procs, Funcs}
+    end,
+    is_redbug_alive().
+
+is_redbug_alive() ->
+    case whereis(redbug) of
+        undefined ->
+            erlang:exit(self(), redbug_down);
+        _ ->
+            timer:sleep(100),
+            is_redbug_alive()
     end.
 
-trace_file(Node) ->
-    Node ++ "_traces".
 
-% printer(FPID) ->
-%     receive
-%         Any ->
-%             ok = file:write(FPID, list_to_binary(io_lib:format("~p\n",[Any]))),
-%             printer(FPID)
-%     end.
+% trace_file(Node) ->
+%     atom_to_list(Node) ++ "_traces".
 
 usage() ->
     io:format("\nuse Double Quotes.\n"),
