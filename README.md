@@ -8,7 +8,7 @@ Currently erltea uses Redbug found in eper, for doing the remote tracing.
 
 #### Getting Started
 ---
-Add your nodes to the nodes file, ( NewLine Seperated ).
+Add your nodes to the nodes file, ( NewLine Seperated, with a NewLine at the end ).
 ```
 node1@host1.somewhere
 node2@host2.somewhere
