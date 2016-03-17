@@ -20,4 +20,5 @@ have a look at the [Redbug Trace Pattern examples](https://github.com/massemanet
 ./erltea.sh Cookie TrcPattern1 TrcPattern2 ... ...
 ./erltea.sh cookie "ets -> return;stack"
 ```
-and expect traces in the traces directory.
+traces are stored in NODE_traces.trc, NODE_traces.trc.1, NODE_traces.trc2,
+usually where the remote node's erlang.log will be
