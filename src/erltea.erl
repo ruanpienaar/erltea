@@ -35,7 +35,7 @@ do_trace(Trc, Opts1, Node) ->
 %             =ERROR REPORT==== 17-Mar-2016::11:55:20 ===
 % Error in process <0.41.0> on node 'trace_node_test2@rpmbp' with exit value: {terminated,[{io,format,[<0.39.0>,"~s~n",["\n% 11:55:20 <5039.38.0>({erlang,apply,2})\n% ets:i()"]],[]},{redbug,'-mk_outer/1-fun-3-',6,[{file,"src/redbug.erl"},{line,397}]},{redbug,'-wrap_print_fun/1-fun-0-',3,[{file,"src/redbug.erl"},{line...
             % {print_file, File},
-            {file, "traces/" ++ File},
+            {file, File},
             % {print_fun,
             %     fun(T) ->
             %         erltea_tracer_printer ! T
