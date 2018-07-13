@@ -8,17 +8,25 @@ Currently erltea uses Redbug found in eper, for doing the remote tracing.
 
 #### Getting Started
 ---
-Add your nodes to the nodes file, ( NewLine Seperated, with a NewLine at the end ).
+Add your nodes to the nodes file
+Each entry is a node name seperate by space then the cookie for that node.
 ```
-node1@host1.somewhere
-node2@host2.somewhere
+node1@host1.somewhere cookie1
+node2@host2.somewhere cookie2
 ```
 start tracing by using the schnell script ;)
 write the trace pattern in double quotes, 
 have a look at the [Redbug Trace Pattern examples](https://github.com/massemanet/eper/blob/master/src/redbug.erl#L78).
+
+#### Example 1:
+Trace all ets lookups where the table is my_table, and stop when either a time of 10s has been reached, or a maximum of 1000 messages.
+
 ```bash
-./erltea.sh Cookie TrcPattern1 TrcPattern2 ... ...
-./erltea.sh cookie "ets -> return;stack"
+./start_erltea.sh 10 1000 "ets:lookup(Tbl, _) when Tbl == my_table -> return"
 ```
-Trace results are stored in the erltea directory as : trace_file_NODE.txt.
-**COMMING SOON** seperate script to trace to binary file, plus another script for format binary files.
+
+#### Example 2:
+Trace all ets lookups and trace all ets:delete calls for 60s or 100 messages
+```bash
+./erltea.sh 60 100 "ets:lookup/2 -> return" "ets:delete/1" "ets:delete/2"
+```

@@ -1,7 +1,3 @@
-ERL			?= erl
-ERLC			= erlc
-EBIN_DIRS		:= $(wildcard deps/*/ebin)
-
 .PHONY: compile get-deps update-deps test clean deep-clean
 
 compile: get-deps update-deps
@@ -35,3 +31,9 @@ buildplt:
 
 checkplt: buildplt
 	@rebar skip_deps=true check-plt
+
+multitail:
+		@which multitail || git clone https://github.com/ruanpienaar/multitail
+		@cd multitail && make
+		@echo "multitail compiled and binary in $PWD/multitail/multitail"
+		@echo "can make install if you want."

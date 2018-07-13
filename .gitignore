@@ -7,3 +7,6 @@ deps/*
 apps/*/logs
 erl_crash.dump
 Mnesia*
+.rebar/
+multitail/
+trace_file_*
