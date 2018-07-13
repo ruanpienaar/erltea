@@ -1,6 +1,15 @@
 #!/bin/bash
 set -x
 DIR=`dirname $0`
+
+mv trace_file_* old/
+
+if [ "$#" -lt "3" ]; then
+    echo " Usage "
+    echo "./start_erltea.sh SECONDS MESSAGE_COUNT TRACES TRACES ..."
+    exit 1
+fi
+
 # $1 - max trace time in seconds
 # $2 - max trace messages
 # $@ ( Rest of args ) - Trace patterns seperated by spaces ( as specified by redbug ).
@@ -15,22 +24,12 @@ fi
 while read LINE; do 
     NODE=`echo $LINE | awk '{ print $1 }'`
     COOKIE=`echo $LINE | awk '{ print $2 }'`
-    erl -pa $DIR/ebin -pa $DIR/deps/*/ebin -sname "trace_node_$NODE" \
-    -run erltea trace "$NODE" "$COOKIE" "$@" > "trace_file_$NODE.txt"
-    #-noinput -noshell -detached \
-done < nodess
+    erl -pa $DIR/_build/default/deps/*/ebin -name "trace_node_$NODE" \
+    -config sys.config -proto_dist hawk_tcp \
+    -noinput -noshell \
+    -run erltea trace "$NODE" "$COOKIE" "$@" > "trace_file_$NODE.txt" &
+done < nodes
 
 # if multitail installed, start multitail on current trace files
-# loop over nodes 
-# add file to list
-# start multitail
-
-
-# for LINE in `cat nodes`; do
-#     N=`echo $LINE | awk '{ print $1 }'`
-#     COOKIE=`echo $LINE | awk '{ print $2 }'`
-#     echo $N $COOKIE $@
-#     # erl -pa $DIR/ebin -pa $DIR/deps/*/ebin -sname "trace_node_$NODE" -setcookie $COOKIE -hidden \
-#     # -run erltea trace "$NODE" "$@" > "trace_file_$NODE.txt"
-#     #-noinput -noshell -detached \
-# done
+sleep 1
+./multitail/multitail trace_file_*

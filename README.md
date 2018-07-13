@@ -6,7 +6,14 @@ Stop pulling your hair out, use tracing :)
 
 Currently erltea uses Redbug found in eper, for doing the remote tracing.
 
-#### Getting Started
+### Getting Started
+
+#### Compiling
+```
+make 
+make multitail ( OPTIONAL )
+```
+
 ---
 Add your nodes to the nodes file
 Each entry is a node name seperate by space then the cookie for that node.
@@ -28,5 +35,5 @@ Trace all ets lookups where the table is my_table, and stop when either a time o
 #### Example 2:
 Trace all ets lookups and trace all ets:delete calls for 60s or 100 messages
 ```bash
-./erltea.sh 60 100 "ets:lookup/2 -> return" "ets:delete/1" "ets:delete/2"
+./start_erltea.sh 60 100 "ets:lookup/2 -> return" "ets:delete/1" "ets:delete/2"
 ```

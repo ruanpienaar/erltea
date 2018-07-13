@@ -10,3 +10,6 @@ Mnesia*
 .rebar/
 multitail/
 trace_file_*
+_build/
+rebar.lock
+rebar3

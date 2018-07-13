@@ -1,39 +1,25 @@
-.PHONY: compile get-deps update-deps test clean deep-clean
+.PHONY: compile get-deps test clean dialyzer rebar3
 
-compile: get-deps update-deps
-	@rebar compile
-
-beams:
-	@rebar compile
+compile: rebar3 get-deps
+	@./rebar3 compile
 
 get-deps:
-	@rebar get-deps
+	@./rebar3 get-deps
 
-update-deps:
-	@rebar update-deps
+test:
+	@./rebar3 eunit ct
 
 clean:
-	@rm -rf traces/*
-	@rebar clean
+	@./rebar3 clean
 
-deep-clean: clean
-	@rebar delete-deps
+dialyzer: compile
+	@./rebar3 dialyzer
 
-setup_dialyzer:
-	dialyzer --build_plt --apps erts kernel stdlib mnesia compiler syntax_tools runtime_tools crypto tools inets ssl webtool public_key observer
-	dialyzer --add_to_plt deps/*/ebin
-
-analyze: checkplt
-	@rebar skip_deps=true dialyze
-
-buildplt:
-	@rebar skip_deps=true build-plt
-
-checkplt: buildplt
-	@rebar skip_deps=true check-plt
+rebar3:
+	@ls rebar3 || wget https://s3.amazonaws.com/rebar3/rebar3 && chmod +x rebar3
 
 multitail:
-		@which multitail || git clone https://github.com/ruanpienaar/multitail
-		@cd multitail && make
-		@echo "multitail compiled and binary in $PWD/multitail/multitail"
-		@echo "can make install if you want."
+	@which multitail || git clone https://github.com/ruanpienaar/multitail
+	@cd multitail && make
+	@echo "multitail compiled and binary in $PWD/multitail/multitail"
+	@echo "can make install if you want."

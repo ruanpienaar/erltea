@@ -5,6 +5,7 @@
 ]).
 
 trace([Node, Cookie, Time, MessageCount | Traces]) when length(Traces) >= 1 ->
+    io:format("Traces ~p\n\n", [Traces]),
     NodeAtom = list_to_atom(Node),
     CookieAtom = list_to_atom(Cookie),
     true = erlang:set_cookie(NodeAtom, CookieAtom),
@@ -13,7 +14,7 @@ trace([Node, Cookie, Time, MessageCount | Traces]) when length(Traces) >= 1 ->
             _Pid = proc_lib:spawn_link(
                 ?MODULE,
                 do_trace,
-                [Node, list_to_integer(Time)*1000, list_to_integer(MessageCount), Traces]
+                [NodeAtom, list_to_integer(Time)*1000, list_to_integer(MessageCount), Traces]
             ),
             receive
                 Any ->
