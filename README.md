@@ -35,5 +35,5 @@ Trace all ets lookups where the table is my_table, and stop when either a time o
 #### Example 2:
 Trace all ets lookups and trace all ets:delete calls for 60s or 100 messages
 ```bash
-./start_erltea.sh 60 100 "ets:lookup/2 -> return" "ets:delete/1" "ets:delete/2"
+./start_erltea.sh 60 100 "ets:lookup/2 -> return" "ets:delete/1 -> return" "ets:delete/2 -> return"
 ```
